@@ -1,11 +1,11 @@
 import fetch from 'isomorphic-fetch';
 
-var Workspaces_URL = 'http://localhost:15001/workspaces/v1/recents';
+var Workspaces_URL = 'http://localhost:15001';
 
-export function fetchWorkspaces(params) {
-	let url = Workspaces_URL;
-	if (params) {
-		url = insertParams(url, params);
+export function fetchWorkspaces(name) {
+	let url = Workspaces_URL + '/workspaces/v1';
+	if (name) {
+		url = url + '?name=' + encodeURI(name);
 	}
 
 	return fetch(url)
@@ -36,6 +36,19 @@ export function fetchWorkspaces(params) {
 	// 				//dispatch(requestWorkspacesFail(error));
 	// 			});
 	// };
+}
+
+export function fetchRecentWorkspaces(params) {
+	let url = Workspaces_URL + '/workspaces/v1/recents';
+	return fetch(url)
+			.then(handleErrors)
+			.then(req => req.json())
+			.then(json => {
+				return json;
+			})
+			.catch((error) => {
+				handleErrors(error);
+			});
 }
 
 
