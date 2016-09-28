@@ -1,0 +1,30 @@
+{
+  "scripts": {
+    "start": "NODE_ENV=developement webpack-dashboard -- webpack-dev-server --inline --config webpack.config.dev.js --content-base build/",
+    "prepublish": "webpack",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "lint:es": "eslint --config .eslintrc src/*.js",
+    "lint": "npm run lint:es"
+  },
+  "dependencies": {
+    "react": "^15.3.2",
+    "react-bootstrap": "^0.30.3",
+    "react-dom": "^15.3.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.11.1",
+    "copy-webpack-plugin": "^3.0.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "html-webpack-plugin": "^2.22.0",
+    "react-addons-test-utils": "^15.3.2",
+    "react-test-renderer": "^15.3.2",
+    "webpack": "^1.13.2",
+    "webpack-dashboard": "^0.2.0",
+    "webpack-dev-server": "^1.16.1"
+  }
+}
