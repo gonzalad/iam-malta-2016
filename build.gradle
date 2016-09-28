@@ -1,0 +1,146 @@
+// Common part of service build script - start
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+        maven {
+            url nexusTpsvcUrl
+            credentials {
+                username nexusTpsvcUsername
+                password nexusTpsvcPassword
+            }
+        }
+    }
+
+    configurations.create('talendScripts')
+    configurations.create('talendCodestyle')
+
+    configurations.all {
+        resolutionStrategy {
+            cacheDynamicVersionsFor 0, 'seconds'
+        }
+    }
+
+    dependencies {
+//        classpath 'org.talend.btools:gitver:1.+'
+        talendScripts 'org.talend.btools:scripts:1.+'
+        talendCodestyle 'org.talend.btools:codestyle:1.+'
+    }
+}
+def talendScript(String scriptName) {
+    def scr = zipTree(++buildscript.configurations.talendScripts.files.iterator()).files.find {
+        (it.name == scriptName + '.gradle')
+    }
+    if (scr == null) {
+        throw new StopExecutionException("Talend script with name '$scriptName' not found.")
+    }
+    return scr
+}
+
+
+// Common part of service build script - end
+
+allprojects {
+    group = 'org.malta.iam'
+    version "1.0.0-SNAPSHOT"
+
+    apply from: talendScript('properties')
+    apply from: talendScript('ports')
+    apply from: talendScript('versions')
+    apply from: talendScript('repos')
+    apply from: talendScript('ide')
+
+    apply plugin: 'base'
+//    apply plugin: 'talend.gitver'
+}
+
+buildscript {
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:2.6.7'
+    }
+}
+
+apply from: talendScript('coverage')
+apply from: talendScript('docker')
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.12'
+}
+
+// --------------------------------------------------------
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+evaluationDependsOnChildren()
+
+task prepareDockerCompose  {
+    doFirst {
+        copy {
+            from "docker-compose.template"
+            into "$buildDir/"
+            rename "docker-compose.template", "docker-compose.yml"
+            
+            def scimDebugPort = (project.hasProperty('remoteDebug') ? "      - \"5005:5005\"\n" : "")
+
+            filter DeferredReplaceTokens, tokenGenerator: { [
+                        "oauthApplicationClientArtifactName" : getImagesInfo()."OauthACServerFQIN",
+                        "oauthResourceServerArtifactName" : getImagesInfo()."OauthRSFQIN",
+                        "pathToRootProject" : rootProject.projectDir.toString()
+                        ] }
+
+        }
+    }
+
+}
+
+prepareDockerCompose.dependsOn modulesWhichCreatesDockerImages().buildDocker
+
+task buildDocker {
+    dependsOn prepareDockerCompose
+}
+
+///Tools
+
+def modulesWhichCreatesDockerImages() {
+    subprojects.findAll({
+        (it.name == 'application-client') || (it.name == 'resource-server')
+    })
+}
+
+class DeferredReplaceTokens extends FilterReader {
+      /**
+     * This is the closure that is expected to return something that can be converted to a Hashset
+     */
+    def tokenGenerator
+    FilterReader actualReader
+      public DeferredReplaceTokens(Reader reader) {
+        super(reader)
+    }
+      /**
+     * On-demand creation of the actual ReplaceToken instance
+     * @return The reader we delegate to
+     */
+    FilterReader reader() {
+        if (actualReader == null) {
+            actualReader = new ReplaceTokens(this.in)
+            Hashtable tokens = tokenGenerator()
+            // setTokens is really private, but all gradle example code
+            // use it like it's public so I will as well
+            actualReader.tokens = tokens
+        }
+          return actualReader
+    }
+      @Override
+    int read(char[] cbuf, int off, int len) throws IOException {
+        return reader().read(cbuf, off, len)
+    }
+      @Override
+    int read() throws IOException {
+        return reader().read()
+    }
+      @Override
+    void close() throws IOException {
+        reader().close()
+    }
+  }

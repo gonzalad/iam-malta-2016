@@ -1,0 +1,24 @@
+#debug: true
+server:
+  port: 15001
+
+management:
+  security:
+    enabled: false
+
+logging:
+  level:
+    org.springframework.security: INFO
+
+security:
+  basic:
+    enabled: false
+  user:
+    password: user
+  oauth2:
+    client:
+      clientId: HpIWzRI1o75mQw
+      clientSecret: MQGcqYzkjGttRkNxM_c6Dg
+    resource:
+      serviceId: ${PREFIX:}resource
+      tokenInfoUri: http://localhost:9080/oidc/oauth2/introspect

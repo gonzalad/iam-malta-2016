@@ -1,0 +1,72 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+    }
+}
+
+apply from: talendScript('java')
+apply from: talendScript('docker')
+
+apply plugin: 'spring-boot'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    compile("org.springframework.boot:spring-boot-starter-jetty:$springBootVersion")
+    compile("org.springframework.security.oauth:spring-security-oauth2:$springSecurityVersion")
+    compile "org.springframework.boot:spring-boot-starter-security:$springBootVersion"
+    compile ('org.talend.iam:oidc-client:1-+')
+    compile("io.springfox:springfox-swagger-ui:$springfoxSwaggerVersion")
+    compile("io.springfox:springfox-swagger2:$springfoxSwaggerVersion")
+    runtime 'org.apache.httpcomponents:httpclient:4.5.2'
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+}
+
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerTagImage
+import com.bmuschko.gradle.docker.DockerRegistryCredentials
+
+import java.nio.file.Files
+import java.nio.file.StandardOpenOption
+
+def dockerRegistryCredentials = new DockerRegistryCredentials()
+dockerRegistryCredentials.url = 'localhost:5000'
+
+task dockerCreateDockerfile(type: Dockerfile, dependsOn: jar) {
+    destFile = project.file("$buildDir/Dockerfile")
+    from 'java:8-jre-alpine'
+    exposePort 7778
+    addFile("libs/$archivesBaseName-${version}.jar", "/opt/$archivesBaseName/")
+    defaultCommand('java', '-jar', "/opt/$archivesBaseName/$archivesBaseName-${version}.jar")
+}
+
+def writeDockerImage() {
+    File output = file("$buildDir/docker.image");
+    Files.write(output.toPath(), "talend/$archivesBaseName:$version".getBytes('UTF-8'),
+            StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+}
+
+task dockerBuildImage(type: DockerBuildImage, dependsOn: [dockerCreateDockerfile, assemble]) {
+    tag = "${dockerRegistryCredentials.url}/talend/$archivesBaseName:$version"
+    dockerFile = dockerCreateDockerfile.destFile
+    inputDir = dockerCreateDockerfile.destFile.parentFile
+    doLast {
+        writeDockerImage()
+        updateDockerImagesInfoFile("IamServerFQIN: $tag")
+    }
+}
+
+task buildDocker(type: DockerTagImage, dependsOn: dockerBuildImage) {
+    imageId = "${dockerRegistryCredentials.url}/talend/$archivesBaseName:$version"
+    repository = "${dockerRegistryCredentials.url}/talend/$archivesBaseName"
+    tag = 'latest'
+    force = true
+}

@@ -1,0 +1,73 @@
+#debug: true
+server:
+  port: 10001
+
+security:
+  basic:
+    enabled: false
+management:
+  security:
+    enabled: false
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.netflix.discovery: 'OFF'
+
+---
+spring:
+  profiles: google
+security:
+  oauth2:
+    client:
+      clientId: 606831894610-d1en6bktkr0ko5fmlco299guugj1o7s9.apps.googleusercontent.com
+      clientSecret: 0O-lbVBfwdYh_Y2oqM96VoJ1
+      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+      clientAuthenticationScheme: query
+      scope: openid email
+    resource:
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+      preferTokenInfo: false
+    userInfoMapping:
+      email: email
+      firstName: given_name
+      lastName: family_name
+
+
+---
+spring:
+  profiles: github
+security:
+#  sessions: NEVER
+  oauth2:
+    #sso:
+    #  loginPath: /dashboard/login
+    client:
+      clientId: 89630a412fa314777dc2
+      clientSecret: c7a29ec26ec7805e78b496ea67cc13e5a9b8bcf0
+      userAuthorizationUri: https://github.com/login/oauth/authorize
+      accessTokenUri: https://github.com/login/oauth/access_token
+      scope: user:email
+    resource:
+      userInfoUri: https://api.github.com/user
+      preferTokenInfo: false
+    userInfoMapping:
+      email: email
+      firstName:
+      lastName: name
+
+---
+spring:
+  profiles: oidc
+        
+security:
+  user:
+    password: user
+  oauth2:
+    client:
+      clientId: HpIWzRI1o75mQw
+      clientSecret: MQGcqYzkjGttRkNxM_c6Dg
+    resource:
+      serviceId: ${PREFIX:}resource
+      tokenInfoUri: http://localhost:9080/oidc/oauth2/introspect
