@@ -1,22 +1,39 @@
 package org.malta.iam.workspace.controller.v1;
 
-import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/workspaces")
+@RequestMapping(value = "/workspaces/v1")
 public class WorkspaceController {
+    private List<WorkspaceResource> workspaces;
 
+    public WorkspaceController() {
+        workspaces = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            WorkspaceResource workspace = new WorkspaceResource();
+            workspace.setId((long) i);
+            workspace.setName("Workspace " + i);
+            workspace.setDescription("Mon joli workspace " + i);
+            workspaces.add(workspace);
+        }
+    }
 
-    @RequestMapping(value = "/recents", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public List<WorkspaceResource> find(@RequestParam(required = false) String name) {
+        return workspaces.stream().filter(workspace -> name != null ? workspace.getName().contains(name) : true).collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = "/recents", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<WorkspaceResource> recents() {
-        return null;
+        return workspaces.subList(0, 3);
     }
 
     /**
