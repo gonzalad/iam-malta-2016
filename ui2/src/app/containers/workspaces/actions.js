@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import { browserHistory } from 'react-router'
 
 var Workspaces_URL = 'http://localhost:15001';
 
@@ -7,8 +8,12 @@ export function fetchWorkspaces(name) {
 	if (name) {
 		url = url + '?name=' + encodeURI(name);
 	}
-
-	return fetch(url)
+    let headers = {};
+    let access_token = localStorage.getItem("access_token");
+    if (access_token) {
+    	headers = {"Authorization": "Bearer" + access_token}
+    }
+	return fetch(url, {"headers": headers})
 			.then(handleErrors)
 			.then(req => req.json())
 			.then(json => {
@@ -40,7 +45,12 @@ export function fetchWorkspaces(name) {
 
 export function fetchWorkspace(key) {
 	let url = Workspaces_URL + '/workspaces/v1/' + key;
-	return fetch(url)
+    let headers = {};
+    let access_token = localStorage.getItem("access_token");
+    if (access_token) {
+    	headers = {"Authorization": "Bearer" + access_token}
+    }
+	return fetch(url, {"headers": headers})
 			.then(handleErrors)
 			.then(req => req.json())
 			.then(json => {
@@ -50,20 +60,6 @@ export function fetchWorkspace(key) {
 				handleErrors(error);
 			});	
 }
-
-export function fetchRecentWorkspaces(params) {
-	let url = Workspaces_URL + '/workspaces/v1/recents';
-	return fetch(url)
-			.then(handleErrors)
-			.then(req => req.json())
-			.then(json => {
-				return json;
-			})
-			.catch((error) => {
-				handleErrors(error);
-			});
-}
-
 
 function insertParams(url, params) {
 	let newUrl = url;

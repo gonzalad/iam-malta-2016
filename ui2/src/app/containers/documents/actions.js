@@ -1,20 +1,24 @@
 import fetch from 'isomorphic-fetch';
+import { login } from '../../oidc'
 
 var Documents_URL = 'http://localhost:15001';
 
 export function fetchRecentDocuments(params) {
 	let url = Documents_URL + '/documents/v1/recents';
-	return fetch(url)
-			.then(handleErrors)
-			.then(req => req.json())
-			.then(json => {
+    let headers = {};
+    let access_token = localStorage.getItem("access_token");
+    if (access_token) {
+    	headers = {"Authorization": "Bearer " + access_token}
+    }
+	return fetch(url, {"headers": headers})
+			.then(handleResponse)
+			/*.then(json => {
 				return json;
-			})
+			})*/
 			.catch((error) => {
 				handleErrors(error);
-			});
+			})
 }
-
 
 function insertParams(url, params) {
 	let newUrl = url;
@@ -28,6 +32,17 @@ function insertParams(url, params) {
 		}
 	});
 	return newUrl;
+}
+
+function handleResponse(response) {
+    if (response.status == 401) {
+    	login();
+    	return {};
+    } else  if (response.status >= 400) {
+        throw new Error("Bad response from server");
+    } else {
+    	return response.json();
+    }
 }
 
 const handleErrors = (response) => {

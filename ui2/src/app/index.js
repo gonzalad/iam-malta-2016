@@ -1,38 +1,53 @@
 import React from 'react'; // don't forget that for the compiler...
 import { render } from 'react-dom';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
+import createOidcMiddleware, { createUserManager, OidcProvider, reducer } from 'redux-oidc';
+
 //import { App, initializeStore } from 'react-cmf';
 
-import App from './components/App';
-//import MyTable from './components/MyTable';
-//import SampleForm from './components/SampleForm';
-//import App from './components/App';
+import App from './app';
 
-//configure.initialize();
-//const store = initializeStore();
 
-// render(
-// 	<h1>Hello, world!</h1>,
-//     document.getElementById('example')
-// );
+// user manager configuration object, see oidc-client-js documentation for details
+const config = {
+  client_id: 'my-client',
+  redirect_uri: `${window.location.protocol}//${window.location.hostname}:${window.location.port}/callback`,
+  response_type: 'id_token token',
+  scope: 'openid profile',
+  authority: 'http://myIdentityProvider.com',
+  post_logout_redirect_uri: `${window.location.protocol}//${window.location.hostname}:${window.location.port}/login`,
+  silent_redirect_uri: `${window.location.protocol}//${window.location.hostname}:${window.location.port}/silent_renew.html`,
+  automaticSilentRenew: true,
+  filterProtocolClaims: true,
+  loadUserInfo: true
+}
 
-// render(
-// 	<MyTable/>,
-// 	document.getElementById('my-table')
-// );
+// create a user manager instance
+const userManager = createUserManager(config);
 
-// render(
-// 	<SampleForm/>,
-// 	document.getElementById('sample-form')
-// );
+// create the middleware
+const oidcMiddleware = createOidcMiddleware(userManager, () => true, false, '/callback');
 
-// render(
-// 	<App/>,
-// 	document.getElementById('app')
-// );
+// configure your reducers
+const reducers = combineReducers({
+  oidc: reducer,
+  // your other reducers
+});
+
+// configure your redux store
+const store = createStore(
+  reducers,
+  applyMiddleware(oidcMiddleware)
+);
 
 render(
-	<App/>,
+	(
+	  <Provider store={store}>
+	    <OidcProvider store={store} userManager={userManager}>
+	      <App/>
+	    </OidcProvider>
+	  </Provider>
+	),
 	document.getElementById('app')
-	// <WorkspaceListBox/>,
-	// document.getElementById('workspace-list-box')
 );

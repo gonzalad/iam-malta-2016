@@ -9,11 +9,16 @@
     "lint": "npm run lint:es"
   },
   "dependencies": {
+    "babel-polyfill": "^6.16.0",
     "isomorphic-fetch": "^2.2.1",
+    "oidc-client": "^1.2.0-beta.3",
     "react": "^15.3.2",
     "react-bootstrap": "^0.30.3",
     "react-dom": "^15.3.2",
-    "react-router": "^2.8.1"
+    "react-redux": "^4.4.5",
+    "react-router": "^2.8.1",
+    "redux": "^3.6.0",
+    "redux-oidc": "^2.2.0-beta.2"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",
