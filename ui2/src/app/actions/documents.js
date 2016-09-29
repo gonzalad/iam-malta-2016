@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { login } from '../../oidc'
+import { login } from '../oidc'
 
 var Documents_URL = 'http://localhost:15001';
 

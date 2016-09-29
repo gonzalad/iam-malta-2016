@@ -1,11 +1,11 @@
 import React from 'react';
-import WorkspaceList from './WorkspaceList';
-import DocumentList from '../documents/DocumentList';
+import WorkspaceList from './workspace-list';
+import DocumentList from '../documents/document-list';
 import { Checkbox, Radio, FormGroup, Button, Panel } from 'react-bootstrap';
-import FieldGroup from '../utils/FieldGroup'
+import FieldGroup from '../utils/field-group'
 
-import { fetchWorkspaces } from '../../containers/workspaces/actions';
-import { fetchRecentDocuments } from '../../containers/documents/actions';
+import { fetchWorkspaces } from '../../actions/workspaces';
+import { fetchRecentDocuments } from '../../actions/documents';
 
 import { Router, Route, hashHistory } from 'react-router'
 

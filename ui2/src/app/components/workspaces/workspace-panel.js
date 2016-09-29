@@ -1,13 +1,14 @@
 import React from 'react';
-import FieldGroup from '../utils/FieldGroup';
+import FieldGroup from '../utils/field-group';
 import { Button, Panel } from 'react-bootstrap';
-import { fetchWorkspace } from '../../containers/workspaces/actions.js';
+import { fetchWorkspace } from '../../actions/workspaces';
 
 class WorkspacePanel extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {workspace: {}};
+		this.state = {workspace: {name: ''}};
+		this.handleNameChange = this.handleNameChange.bind(this);
 	}
 
 	componentDidMount() {
@@ -19,6 +20,14 @@ class WorkspacePanel extends React.Component {
 		);
 	}
 
+	handleNameChange(e) {
+		this.setState({ 
+			workspace : {
+					name: e.target.value
+				}
+			});
+	}
+
 	render() {
 		return (
 			<form>
@@ -27,6 +36,7 @@ class WorkspacePanel extends React.Component {
 			      type="text"
 			      label="Name"
 			      value={this.state.workspace.name}
+			      onChange={this.handleNameChange}
 			      placeholder="Workspace name"
 			    />
 			    <Button type="submit">

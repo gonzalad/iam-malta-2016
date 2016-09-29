@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import { Link } from 'react-router';
-import WorkspacePanel from './WorkspacePanel';
+import WorkspacePanel from './workspace-panel';
 
 // see https://github.com/spring-guides/tut-react-and-spring-data-rest/blob/master/basic/src/main/js/app.js
 const WorkspaceList = (props) => { 

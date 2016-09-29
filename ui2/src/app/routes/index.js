@@ -2,8 +2,8 @@ import React from 'react';
 import { Router, Route, hashHistory, browserHistory } from 'react-router';
 
 import { processLoginResponse } from '../oidc';
-import WorkspaceListPanel from '../components/workspaces/WorkspaceListPanel';
-import WorkspacePanel from '../components/workspaces/WorkspacePanel';
+import WorkspaceListPanel from '../components/workspaces/workspace-list-panel';
+import WorkspacePanel from '../components/workspaces/workspace-panel';
 
 class Routes extends React.Component {
 
