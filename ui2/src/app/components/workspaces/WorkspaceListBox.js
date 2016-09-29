@@ -1,14 +1,16 @@
 import React from 'react';
 import WorkspaceList from './WorkspaceList';
+import DocumentList from '../documents/DocumentList';
 import { Checkbox, Radio, FormGroup, Button, Panel } from 'react-bootstrap';
 import FieldGroup from '../utils/FieldGroup'
 
-import { fetchWorkspaces, fetchRecentWorkspaces } from '../../containers/workspaces/actions';
+import { fetchWorkspaces } from '../../containers/workspaces/actions';
+import { fetchRecentDocuments } from '../../containers/documents/actions';
 
 class WorkspaceListBox extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {name: '', workspaces: [], recentWorkspaces: []}
+		this.state = {name: '', workspaces: [], recentDocuments: []}
 		// see https://toddmotto.com/react-create-class-versus-component/
 		this.handleNameChange = this.handleNameChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,8 +33,8 @@ class WorkspaceListBox extends React.Component {
 		//alert('componentDidMount')
 		let state = this.state
 		let comp = this
-		fetchRecentWorkspaces().then( 
-			response => comp.setState({"recentWorkspaces": response})
+		fetchRecentDocuments().then( 
+			response => comp.setState({"recentDocuments": response})
 		);
 	}
 
@@ -55,8 +57,8 @@ class WorkspaceListBox extends React.Component {
 				 <Panel header="Workspace list" bsStyle="primary">
 			    	<WorkspaceList workspaces={this.state.workspaces}/>
 			    </Panel>
-				 <Panel header="Recent workspaces">
-			    	<WorkspaceList workspaces={this.state.recentWorkspaces}/>
+				 <Panel header="Recent documents">
+			    	<DocumentList documents={this.state.recentDocuments}/>
 			    </Panel>
 			</form>
 		)	
