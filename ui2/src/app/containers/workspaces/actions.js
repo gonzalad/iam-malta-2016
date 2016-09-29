@@ -38,6 +38,19 @@ export function fetchWorkspaces(name) {
 	// };
 }
 
+export function fetchWorkspace(key) {
+	let url = Workspaces_URL + '/workspaces/v1/' + key;
+	return fetch(url)
+			.then(handleErrors)
+			.then(req => req.json())
+			.then(json => {
+				return json;
+			})
+			.catch((error) => {
+				handleErrors(error);
+			});	
+}
+
 export function fetchRecentWorkspaces(params) {
 	let url = Workspaces_URL + '/workspaces/v1/recents';
 	return fetch(url)

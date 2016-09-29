@@ -7,7 +7,9 @@ import FieldGroup from '../utils/FieldGroup'
 import { fetchWorkspaces } from '../../containers/workspaces/actions';
 import { fetchRecentDocuments } from '../../containers/documents/actions';
 
-class WorkspaceListBox extends React.Component {
+import { Router, Route, hashHistory } from 'react-router'
+
+class WorkspaceListPanel extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {name: '', workspaces: [], recentDocuments: []}
@@ -65,4 +67,4 @@ class WorkspaceListBox extends React.Component {
 	}	
 }
 
-export default WorkspaceListBox;
+export default WorkspaceListPanel;

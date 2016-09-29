@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.malta.iam.utils.ResourceNotFoundException;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +36,12 @@ public class WorkspaceController {
     @RequestMapping(value = "/recents", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<WorkspaceResource> recents() {
         return workspaces.subList(0, 3);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public WorkspaceResource find(@PathVariable Long id) {
+        return workspaces.stream().filter(workspace -> workspace.getId() == id).findAny()
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Workspace %s not found", id)));
     }
 
     /**

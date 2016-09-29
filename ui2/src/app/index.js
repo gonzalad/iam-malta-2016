@@ -2,7 +2,7 @@ import React from 'react'; // don't forget that for the compiler...
 import { render } from 'react-dom';
 //import { App, initializeStore } from 'react-cmf';
 
-import WorkspaceListBox from './components/workspaces/WorkspaceListBox';
+import App from './components/App';
 //import MyTable from './components/MyTable';
 //import SampleForm from './components/SampleForm';
 //import App from './components/App';
@@ -31,6 +31,8 @@ import WorkspaceListBox from './components/workspaces/WorkspaceListBox';
 // );
 
 render(
-	<WorkspaceListBox/>,
-	document.getElementById('workspace-list-box')
+	<App/>,
+	document.getElementById('app')
+	// <WorkspaceListBox/>,
+	// document.getElementById('workspace-list-box')
 );
