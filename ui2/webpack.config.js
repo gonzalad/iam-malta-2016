@@ -9,6 +9,7 @@ module.exports = {
 	output: {
 		path: `${__dirname}/build`,
 		filename: '[hash].app.js',
+		publicPath: '/',
 	},
 	devtool: 'inline-source-map',
 	resolve: ['', '.scss', '.css', 'js', 'jsx'],
@@ -32,7 +33,7 @@ module.exports = {
 			),
 		}],
 	},
-	sassLoader: {
+  	sassLoader: {
 		includePaths: [
 			path.resolve(__dirname, './src/app'),
 		],
@@ -53,4 +54,7 @@ module.exports = {
 			'process.env.NODE_ENV': JSON.stringify('developpement'),
 		})
 	],
+	devServer: {
+		historyApiFallback: true
+	}
 };

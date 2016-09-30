@@ -17,8 +17,8 @@ security:
     password: user
   oauth2:
     client:
-      clientId: sg80UAGilC1dHw
-      clientSecret: sHvh7PMnbom1eIk8aOv5qg
+      clientId: eAcGkScqUy6u0g
+      clientSecret: Q8TBeg6hO9zHZAsJ4A7loA
     resource:
       serviceId: ${PREFIX:}resource
-      tokenInfoUri: http://localhost:9080/oidc/oauth2/introspect
+      tokenInfoUri: http://iam.com:9080/oidc/oauth2/introspect

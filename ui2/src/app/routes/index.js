@@ -11,22 +11,22 @@ class Routes extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
-		//this.handleLoginResponse = this.handleLoginResponse.bind(this);
+		this.handleLoginResponse = handleLoginResponse.bind(this);
 	}
 
 	render() {
 		return (
 			<Router history={browserHistory}>
-				<Route path="/error*" component={ErrorPanel}/>
+				<Route path="/" component={WorkspaceListPanel} />
+				<Route path="/error*" component={ErrorPanel} />
 				<Route path="/workspaces/:key" component={WorkspacePanel}/>
-				<Route path="/" component={WorkspaceListPanel} onEnter={ handleLoginResponse } />
-				<Route path="/access_token=*" component={WorkspaceListPanel} onEnter={ handleLoginResponse }/>
+				<Route path="/callback" component={ErrorPanel} onEnter={(nextState, replace, callback) => { this.handleLoginResponse(nextState, replace, callback) }}/>
 			</Router>
 		)
 	}
 }
 
-function handleLoginResponse(nextState, replace) {
+function handleLoginResponse(nextState, replace, callback) {
 	// processing login response only if access_token parameter present in Url
 	let hashValue = hash();
 	if (hashValue.get('error')) {
@@ -38,8 +38,12 @@ function handleLoginResponse(nextState, replace) {
 		//browserHistory.push('/error?' + hashValue.get('error'))
 	} else if (hashValue.get('access_token')) {
 		console.debug ('handleLoginResponse');
-		processLoginResponse();
-   		browserHistory.push('/')
+		processLoginResponse().then( function() {
+			browserHistory.push('/');
+		}).then(callback());
+   		//browserHistory.push('/')
+	} else {
+		callback();
 	}
 }
 
