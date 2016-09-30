@@ -8,11 +8,11 @@ var settings = {
       userinfo_endpoint: 'http://localhost:9080/oidc/users/userinfo',
       jwks_uri: 'http://localhost:9080/oidc/jwk/keys'
     },
-    client_id: 'JsHuVyRLcaoQ8Q',
+    client_id: '4GdnHfRCGkPAxg',
     redirect_uri: 'http://localhost:8080',
     post_logout_redirect_uri: 'http://localhost:8080',
     response_type: 'id_token token',
-    scope: 'openid',
+    scope: 'openid workspace.edit',
 
     filterProtocolClaims: true,
     loadUserInfo: true
@@ -27,6 +27,10 @@ export function login() {
     }).catch(function(err) {
         console.debug(err);
     });
+}
+
+export function loggedIn() {
+    return !!localStorage.access_token
 }
 
 export function processLoginResponse() {

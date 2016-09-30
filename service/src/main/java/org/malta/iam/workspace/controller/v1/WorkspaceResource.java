@@ -1,11 +1,11 @@
 package org.malta.iam.workspace.controller.v1;
 
-import java.io.Serializable;
+import org.malta.iam.rest.ResourceSupport;
 
 /**
  * @author agonzalez
  */
-public class WorkspaceResource implements Serializable {
+public class WorkspaceResource extends ResourceSupport {
     private Long id;
     private String name;
     private String description;

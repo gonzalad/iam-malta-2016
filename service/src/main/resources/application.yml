@@ -17,8 +17,8 @@ security:
     password: user
   oauth2:
     client:
-      clientId: HpIWzRI1o75mQw
-      clientSecret: MQGcqYzkjGttRkNxM_c6Dg
+      clientId: sg80UAGilC1dHw
+      clientSecret: sHvh7PMnbom1eIk8aOv5qg
     resource:
       serviceId: ${PREFIX:}resource
       tokenInfoUri: http://localhost:9080/oidc/oauth2/introspect

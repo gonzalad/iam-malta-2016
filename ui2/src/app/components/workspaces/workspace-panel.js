@@ -1,14 +1,25 @@
 import React from 'react';
+import { browserHistory } from 'react-router';
+import { Button, ButtonGroup, Panel, ButtonToolbar } from 'react-bootstrap';
 import FieldGroup from '../utils/field-group';
-import { Button, Panel } from 'react-bootstrap';
 import { fetchWorkspace } from '../../actions/workspaces';
 
 class WorkspacePanel extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {workspace: {name: ''}};
+		this.state = {
+			workspace: {
+				id: this.props.params.key,
+				name: '',
+				permissions: {
+					view: false,
+					edit: false
+				},
+			}
+		};
 		this.handleNameChange = this.handleNameChange.bind(this);
+		this.handleCancel = this.handleCancel.bind(this);
 	}
 
 	componentDidMount() {
@@ -23,9 +34,13 @@ class WorkspacePanel extends React.Component {
 	handleNameChange(e) {
 		this.setState({ 
 			workspace : {
-					name: e.target.value
+					name: e.target.value,
 				}
 			});
+	}
+
+	handleCancel(e) {
+		browserHistory.push('/');
 	}
 
 	render() {
@@ -39,9 +54,17 @@ class WorkspacePanel extends React.Component {
 			      onChange={this.handleNameChange}
 			      placeholder="Workspace name"
 			    />
-			    <Button type="submit">
-			      Submit
-			    </Button>
+			    <ButtonGroup>
+				    <Button bsStyle="primary" type="submit" disabled={this.state.workspace.permissions.update != true}>
+				      Update
+				    </Button>
+				    <Button disabled={this.state.workspace.permissions.delete != true}>
+				      Delete
+				    </Button>
+				    <Button onClick={this.handleCancel }>
+				      Back
+				    </Button>
+			    </ButtonGroup>
 			</form>
 		)	
 	}	

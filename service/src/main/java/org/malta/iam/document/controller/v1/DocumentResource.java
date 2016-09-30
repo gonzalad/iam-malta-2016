@@ -2,12 +2,13 @@ package org.malta.iam.document.controller.v1;
 
 import java.io.Serializable;
 
+import org.malta.iam.rest.ResourceSupport;
 import org.malta.iam.workspace.controller.v1.WorkspaceResource;
 
 /**
  * @author agonzalez
  */
-public class DocumentResource implements Serializable {
+public class DocumentResource extends ResourceSupport {
     private Long id;
     private String name;
     private String schema;

@@ -1,7 +1,7 @@
 import React from 'react';
 import WorkspaceList from './workspace-list';
 import DocumentList from '../documents/document-list';
-import { Checkbox, Radio, FormGroup, Button, Panel } from 'react-bootstrap';
+import { Checkbox, Radio, Navbar, FormGroup, FormControl, Button, Panel } from 'react-bootstrap';
 import FieldGroup from '../utils/field-group'
 
 import { fetchWorkspaces } from '../../actions/workspaces';
@@ -43,22 +43,24 @@ class WorkspaceListPanel extends React.Component {
 	render() {
 		return (
 			<form onSubmit={this.handleSubmit}>
-				<Panel header="Search criteria">
-				    <FieldGroup
-				      id="workspaceNameText"
-				      type="text"
-				      label="Name"
-				      value={this.state.name}
-				      placeholder="Enter workspace name"
-				      onChange={this.handleNameChange}
-				    />
-				    <Button type="submit">
-				      Submit
-				    </Button>
-				 </Panel>
-				 <Panel header="Workspace list" bsStyle="primary">
-			    	<WorkspaceList workspaces={this.state.workspaces}/>
-			    </Panel>
+				<Navbar>
+					<Navbar.Header>
+					  <Navbar.Brand>
+					    <a href="#">Workspaces</a>
+					  </Navbar.Brand>
+					  <Navbar.Toggle />
+					</Navbar.Header>
+					<Navbar.Collapse>
+					  <Navbar.Form pullLeft>
+					    <FormGroup>
+					      <FormControl type="text" placeholder="Search" onChange={this.handleNameChange}/>
+					    </FormGroup>
+					    {' '}
+					    <Button type="submit">Submit</Button>
+					  </Navbar.Form>
+					</Navbar.Collapse>
+				</Navbar>
+		    	<WorkspaceList workspaces={this.state.workspaces}/>
 				 <Panel header="Recent documents">
 			    	<DocumentList documents={this.state.recentDocuments}/>
 			    </Panel>

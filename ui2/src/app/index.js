@@ -43,11 +43,14 @@ const store = createStore(
 
 render(
 	(
-	  <Provider store={store}>
-	    <OidcProvider store={store} userManager={userManager}>
-	      <App/>
-	    </OidcProvider>
-	  </Provider>
+    <App/>
 	),
 	document.getElementById('app')
 );
+
+/*
+    <Provider store={store}>
+      <OidcProvider store={store} userManager={userManager}>
+      </OidcProvider>
+    </Provider>
+*/
