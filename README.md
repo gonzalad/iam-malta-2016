@@ -16,6 +16,17 @@ issues a 401, ui2 traps it, and redirects to OIDC.
 When authentication succeeds, http://localhost:8080 is called back, ui2 module
 stores accessToken (AT) in localStorage and calls service module with this AT. 
 
+## User and Group Creation
+
+You will need :
+ * 1 group : workspace.edit  
+   All users in this group will have the permission to modify workspaces.
+ * 2 users :
+   * alice - no group.
+   * kenny in workspace.edit
+
+User & Group creation is available via Syncope console <http://iam.com:9080/syncope-console>.
+
 ## Configuration
 
  * You'll need to map AS to iam.com (just modify your hosts file)

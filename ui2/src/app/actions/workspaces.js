@@ -3,6 +3,43 @@ import { browserHistory } from 'react-router'
 
 var Workspaces_URL = 'http://localhost:15001';
 
+export function updateWorkspace(workspace) {
+	let url = Workspaces_URL + '/workspaces/v1/' + workspace.id;
+    let headers = new Headers();
+    let access_token = localStorage.getItem("access_token");
+    if (access_token) {
+    	headers.set("Authorization", "Bearer" + access_token);
+    }
+    headers.set("Content-Type", "application/json");
+	return fetch(url, {
+		method: 'put',
+		body: JSON.stringify(workspace),
+		headers: headers
+	})
+	.then(handleErrors)
+	.then(req => req.json())
+	.catch((error) => {
+		handleErrors(error);
+	});
+}
+
+export function deleteWorkspace(workspace) {
+	let url = Workspaces_URL + '/workspaces/v1/' + workspace.id;
+    let headers = new Headers();
+    let access_token = localStorage.getItem("access_token");
+    if (access_token) {
+    	headers.set("Authorization", "Bearer" + access_token);
+    }
+	return fetch(url, {
+		method: 'delete',
+		headers: headers
+	})
+	.then(handleErrors)
+	.catch((error) => {
+		handleErrors(error);
+	});
+}
+
 export function fetchWorkspaces(name) {
 	let url = Workspaces_URL + '/workspaces/v1';
 	if (name) {

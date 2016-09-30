@@ -3,12 +3,14 @@ package org.malta.iam.workspace.controller.v1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.malta.iam.utils.ResourceNotFoundException;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,8 +55,21 @@ public class WorkspaceController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("#oauth2.hasScope('workspace.edit')")
-    public WorkspaceResource update(Long id, WorkspaceResource workspaceResource, Authentication authentication) {
+    public WorkspaceResource update(@PathVariable Long id, @RequestBody WorkspaceResource workspaceResource, Authentication authentication) {
+        int idx = IntStream.range(0, workspaces.size()).filter(i -> workspaces.get(i).getId() == workspaceResource.getId())
+                .findAny()
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Workspace %s not found", workspaceResource.getId())));
+        workspaces.set(idx, workspaceResource);
         return addPermissions(workspaceResource, authentication);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("#oauth2.hasScope('workspace.edit')")
+    public void delete(@PathVariable Long id) {
+        int idx = IntStream.range(0, workspaces.size()).filter(i -> workspaces.get(i).getId() == id)
+                .findAny()
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Workspace %s not found", id)));
+        workspaces.remove(idx);
     }
 
     /**
@@ -72,6 +87,7 @@ public class WorkspaceController {
      * Add update / delete permissions depending on the end-user roles
      */
     private WorkspaceResource addPermissions(WorkspaceResource workspaceResource, Authentication authentication) {
+        workspaceResource.getPermissions().clear();
         workspaceResource.addViewPermission();
         if (hasAnyScope(authentication, new String[]{"workspace.edit"})) {
             workspaceResource.addDeletePermission();
