@@ -8,7 +8,7 @@ var settings = {
       userinfo_endpoint: 'http://iam.com:9080/oidc/users/userinfo',
       jwks_uri: 'http://iam.com:9080/oidc/jwk/keys'
     },
-    client_id: 'c2sBLzppb07cuQ',
+    client_id: 'lv-dX6RkZKEhiA',
     redirect_uri: 'http://localhost:8080/callback',
     post_logout_redirect_uri: 'http://localhost:8080',
     response_type: 'id_token token',

@@ -16,6 +16,24 @@ issues a 401, ui2 traps it, and redirects to OIDC.
 When authentication succeeds, http://localhost:8080 is called back, ui2 module
 stores accessToken (AT) in localStorage and calls service module with this AT. 
 
+## Build & Start AS [optional]
+
+This is an optional step if you use an existing Authorization Server.
+
+Otherwise :
+ * cd platform-services/iam
+ * gradle clean buildDocker
+ * modify build/docker-compose.yml :
+   ```
+   idp_url=http://iam.com:9080/idp
+   oidc_host=iam.com
+   ```
+ * run
+   ```
+    docker rm build_db_1
+    docker-compose -f build/docker-compose.yml up
+   ```
+
 ## User and Group Creation
 
 You will need :
@@ -31,8 +49,15 @@ User & Group creation is available via Syncope console <http://iam.com:9080/sync
 
  * You'll need to map AS to iam.com (just modify your hosts file)
  * You'll need to create a OIDC clientId for ui2.  
-   Go to <http://iam.com:9080/oidc/console/clients> and create a public client type
-   with redirectURI = http://localhost:8080/callback
+   * Go to <http://iam.com:9080/oidc/console/clients> 
+   * Register a new Client :
+
+     | Name | Value                                  |
+     |------|--------------------------------------- |
+     | Name | Malta UI                               |
+     | Type | Public                                 |
+     | Redirect URL | http://localhost:8080/callback |
+     
  * You'll need to set the clientdId in ui2/oidc/index.js file (yes, shitty for now, I don't have central configuration)
 
 ## Running
